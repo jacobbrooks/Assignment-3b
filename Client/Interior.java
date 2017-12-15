@@ -9,12 +9,9 @@ public class Interior extends JTree{
 	@Override
 	public void compute() {
 		invokeAll(quads); 
-	    double md = 0.0;
 	    for (int i = 0; i < quads.length; ++i) {
-	      md = Math.max(md,quads[i].maxDiff);
 	      quads[i].reinitialize(); 
 	    }
-	    maxDiff = md;
 	}
 
 }

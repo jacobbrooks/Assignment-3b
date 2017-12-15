@@ -87,7 +87,7 @@ public class Region {
 			temperature += (c[i] * neighborTerm) / (double) neighborCount;
 		}
 		
-		return temperature / 3.0;
+		return temperature;
 		
 	}
 	
@@ -100,20 +100,6 @@ public class Region {
 		}
 	}
 
-	public int getColor(){
-		if(temperature == 0) {
-			return 0xC3C3C3;
-		}else if (temperature < s / 200000000.0){
-			return 0xFF0000;
-		}else if (temperature < s / 2000000.0){
-			return 0xFFB200; 
-		}else if(temperature <= s){
-			return 0xFFFF00;
-		}else {
-			return 0xFFFFFF;
-		}
-	}
-	
 	private void calculatePercentages() {
 		Random r = new Random();
 		for(int i = 0; i < 3; i++){

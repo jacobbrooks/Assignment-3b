@@ -22,17 +22,13 @@ public class Leaf extends JTree {
 		boolean AtoB = (steps++ % 2) == 0;
 		Region[][] a = (AtoB) ? A : B;
 		Region[][] b = (AtoB) ? B : A;
-		double md = 0.0;
 
 		for (int i = loRow; i <= hiRow; ++i) {
 			for (int j = loCol; j <= hiCol; ++j) {
 				double temperature = a[i][j].calculateTemperature();
 				b[i][j].setTemperature(temperature);
-				md = Math.max(md, Math.abs(b[i][j].getTemperature() - a[i][j].getTemperature()));
 			}
 		}
-
-		maxDiff = md;
 		
 	}
 

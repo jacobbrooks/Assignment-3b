@@ -27,36 +27,36 @@ class Client{
 		int height = 0;
 		int width = 0;	
 		section = "";	
+		double[][] d = new double[height][width];
+
 		try{
 			height = input.readInt();
 			width = input.readInt();
 			lo = input.readInt();
-			hi = input.readInt();	
+			hi = input.readInt();
 			section = input.readUTF();
+
+			d = new double[height][width];
+			for(int i = 0; i < d.length; i++){
+				for(int j = 0; j < d[i].length; j++){
+					d[i][j] = input.readDouble();
+				}
+			}
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		double[][] d = new double[height][width];
-		for(int i = 0; i < d.length; i++){
-			for(int j = 0; j < d[i].length; j++){
-				try{
-					d[i][j] = input.readDouble();
-				}catch(IOException e){
-					e.printStackTrace();
-				}
-			}
-		}
+
 		return d;
 	}
 
 	private double[][] pullEdges(){
-		double[][] edges = new double[2][myChunk.length];
+		double[][] edges = new double[2][myChunk[0].length];
 		try{
-			for(int i = 0; i < myChunk.length; i++){
+			for(int i = 0; i < myChunk[0].length; i++){
 				edges[0][i] = input.readDouble();
-			}		
+			}	
 			if(section.equals("middle")){
-				for(int i = 0; i < myChunk.length; i++){
+				for(int i = 0; i < myChunk[0].length; i++){
 					edges[1][i] = input.readDouble();
 				}
 			}
@@ -67,16 +67,12 @@ class Client{
 	}
 
 	private void pushChunk(){
-		for(int i = 0; i < c.b.length; i++){
-			for(int j = 0; j < c.b[i].length; j++){
-				try{
+		try{
+			for(int i = 0; i < c.b.length; i++){
+				for(int j = 0; j < c.b[i].length; j++){
 					output.writeDouble(c.b[i][j].getTemperature());
-				}catch(IOException e){
-					e.printStackTrace();
 				}
 			}
-		}
-		try{
 			output.flush();
 		}catch(IOException e){
 			e.printStackTrace();
@@ -84,17 +80,28 @@ class Client{
 	}
 
 	public void go(){
-		c.go();
-		pushChunk();
-		double[][] d = pullEdges();
-		c.setEdges(d);
-		c.go();	
-		//c.printAlloy();
-		pushChunk();
-		d = pullEdges();
-		c.setEdges(d);
-		c.go();	
-		//c.printAlloy();
+		try{
+			c.go();
+			pushChunk();
+
+			int iterations = input.readInt();
+
+			while(iterations > 0){
+				double[][] d = pullEdges();
+				c.setEdges(d);
+				c.go();	
+				pushChunk();
+				iterations--;
+			}
+
+			if(input.readInt() == -1){
+				closeStreamsAndSockets();
+				return;
+			}
+
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
 	private void initStreamsAndSockets(){

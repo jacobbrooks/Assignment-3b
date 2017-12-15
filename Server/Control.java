@@ -1,22 +1,19 @@
 public class Control{
 
-	public final int HEIGHT = 16;
-	public final int WIDTH = HEIGHT * 2;
+	public final int HEIGHT;
+	public final int WIDTH;
+	private final int CLIENTS;
+
 	private final double S = 100.0;
 	private final double T = 100.0;
-	private final int CLIENTS;
-	public volatile double[][] alloy;
-	private PrintModule p;
+	public double[][] alloy;
 
-	public Control(int clients, PrintModule p){
+	public Control(int clients, int height){
 		CLIENTS = clients;
+		HEIGHT = height;
+		WIDTH = height * 2;
 		alloy = new double[HEIGHT][WIDTH];
 		initAlloy();
-		this.p = p;
-	}
-
-	public void printAlloy(){
-		p.printMatrix(alloy);
 	}
 
 	private void initAlloy(){
@@ -56,22 +53,17 @@ public class Control{
 	}
 
 	public void setMyChunk(int id, double[][] chunk){
-		int chunkSize = HEIGHT / CLIENTS;
-		int offset = chunkSize * id;		
-		for(int i = offset - 1; i <= offset + chunkSize; i++){
-			if(id == 0 && i == offset - 1){
-				i = offset;
-			}else if(id == CLIENTS - 1 && i == offset + chunkSize){
-				break;
-			}
+		int chunkHeight = HEIGHT / CLIENTS;
+		int offset = chunkHeight * id;
+		for(int i = offset; i < offset + chunkHeight; i++){
 			for(int j = 0; j < WIDTH; j++){
 				if(id == 0){
 					alloy[i][j] = chunk[i][j];
 				}else{
-					alloy[i][j] = chunk[i - (offset - 1)][j];
+					alloy[i][j] = chunk[(i - offset) + 1][j];
 				}
 			}
-		}
+		}		
 	}
 
 	public double[] getMyEdge(int id, boolean top){

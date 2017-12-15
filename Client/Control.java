@@ -18,21 +18,27 @@ public class Control{
 	
 	public Control(int height, int width, double c1, double c2, double c3, double s, double t, 
 					int steps, double[][] initialTemperatures, int lo, int hi, String section) {
+
 		this.height = height;
 		this.width = width;
 		this.section = section;
+
 		this.c1 = c1;
 		this.c2 = c2;
 		this.c3 = c3;
+
 		threshold = (height * width) / 4;
+
 		this.initialTemperatures = new double[height][width]; 
 		for(int i = 0; i < height; i++){
 			for(int j = 0; j < width; j++){
 				this.initialTemperatures[i][j] = initialTemperatures[i][j];
 			}
 		}
+
 		initMatrices(s,t);
 		j = new Jacobi(a, b, lo, hi, 0, width - 1, steps, threshold);
+
 	}
 
 	public void setEdges(double[][] d){
@@ -81,7 +87,7 @@ public class Control{
 					a[i][j].setNeighbor(2, a[i][j - 1]);
 					b[i][j].setNeighbor(2, b[i][j - 1]);
 				}
-				if(j + 1 < height * 2) {
+				if(j + 1 < width) {
 					a[i][j].setNeighbor(3, a[i][j + 1]);
 					b[i][j].setNeighbor(3, b[i][j + 1]);
 				}
@@ -110,6 +116,7 @@ public class Control{
 
 	public void go() {
 		j.invoke();
+		j.reinitialize();
 	}
 	
 	
